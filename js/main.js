@@ -1,8 +1,11 @@
 // 1.que elementos del DOM voy a capturar? el div y la foto que hay en bienvenidos, el div de recomendados donde meteremos cada tarjeta con cada imagen, y el apartado de destinos /select
+
+const limpiar = document.querySelector('#limpiar')
 const fotoHeader = document.querySelector('#foto img')
 const recomendados = document.querySelector('#recomendados')
 const destinos = document.querySelector('#destinos')
-const fotoBot = document.querySelector("section select")
+const fotoBot = document.querySelector("section:last-of-type")
+const fotoCiudad = document.querySelector('#fotoCiudad')
 
 //el fragment/carretilla!!
 const fragment = document.createDocumentFragment()
@@ -62,44 +65,52 @@ const arrayCartas = [
 ]
 const arrayFotoGrandes = [
     {
-        titulo: 'Foto 1',
+        titulo: '1',
         src: `${url}/img-grandes/1.jpg`,
         alt: 'Paisaje 1',
+        ciudad: "Madrid"
     },
     {
-        titulo: 'Foto 2',
+        titulo: '2',
         src: `${url}/img-grandes/2.jpg`,
         alt: 'Paisaje 2',
+        ciudad: "Lisboa"
     },
     {
-        titulo: 'Foto 3',
+        titulo: '3',
         src: `${url}/img-grandes/3.jpg`,
         alt: 'Paisaje 3',
+        ciudad: "Estambul"
     },
     {
-        titulo: 'Foto 4',
+        titulo: '4',
         src: `${url}/img-grandes/4.jpg`,
         alt: 'Paisaje 4',
+        ciudad: "Bangkok"
     },
     {
-        titulo: 'Foto 5',
+        titulo: '5',
         src: `${url}/img-grandes/5.jpg`,
         alt: 'Paisaje 5',
+        ciudad: "Tokyo"
     },
     {
-        titulo: 'Foto 6',
+        titulo: '6',
         src: `${url}/img-grandes/6.jpg`,
         alt: 'Paisaje 6',
+        ciudad: "Roma"
     },
     {
-        titulo: 'Foto 7',
+        titulo: '7',
         src: `${url}/img-grandes/7.jpg`,
         alt: 'Paisaje 7',
+        ciudad: "Amsterdam"
     },
     {
-        titulo: 'Foto 8',
+        titulo: '8',
         src: `${url}/img-grandes/8.jpg`,
         alt: 'Paisaje 8',
+        ciudad: "Praga"
     }
 ]
 
@@ -108,32 +119,37 @@ const arrayCiudades = ['Madrid', 'Lisboa', 'Estambul', 'Bangkok', 'Tokyo', 'Roma
 
 //4.Cuando sucederan estas cosas?? cuando se cargue la pagina y cuando se escoja una opcion del select
 
-destinos.addEventListener('change', (ev)=>{
-    const recogerEtiquta = ev.target.value
+destinos.addEventListener('change', (ev) => {
+    const tag = ev.target.value
+    //console.log(tag)
+    borrar()
     
-    const seleccionar = arrayFotoGrandes.find((item)=>{
-        item.titulo === recogerEtiquta
-    })
+    pintarFotoBot(tag)
+    botonVisible()
+})
+limpiar.addEventListener('click', (ev) => {
+    borrar()
     
 })
 
-
-//3.que acciones necesito que sucedan??que cada vez que se cargue la pagina la foto de arriba cambia aleatoria, necesito crear las tarjetas con a partir del array de objetos, que cuando elijamos una ciudad del select parezca una imagen con su titulo(puede ser el mismo array que para el de arriba)
+//3.que acciones necesito que sucedan??que cada vez que se cargue la pagina la foto de arriba cambia aleatoria, necesito crear las tarjetas con a partir del array de objetos, que cuando elijamos una ciudad del select aparezca una imagen con su titulo(puede ser el mismo array que para el de arriba)
 
 const aleatoria = () => {
 
     return parseInt(Math.floor(Math.random() * arrayFotoGrandes.length))
-    
+
 }
+
 
 const pintarFotoTop = () => {
     const indice = aleatoria()
+    console.log(indice)
     fotoHeader.src = arrayFotoGrandes[indice].src;
-    
+
 }
 
 const pintarCartas = () => {
-    arrayCartas.forEach((item)=>{
+    arrayCartas.forEach((item) => {
         const cajaGrande = document.createElement("DIV")
         const foto = document.createElement("IMG")
         const caja = document.createElement("DIV")
@@ -156,11 +172,11 @@ const pintarCartas = () => {
         cajaGrande.append(caja)
         fragment.append(cajaGrande)
     })
-recomendados.append(fragment)
+    recomendados.append(fragment)
 }
 
 const pintarSelect = () => {
-    arrayCiudades.forEach((item)=>{
+    arrayCiudades.forEach((item) => {
         const option1 = document.createElement("OPTION")
         option1.value = item
         option1.textContent = item
@@ -169,17 +185,39 @@ const pintarSelect = () => {
     destinos.append(fragment)
 }
 
-const pintarFotoBot = () => {
-    const cajaGrande = document.createElement("DIV")
-    const foto = document.createElement("IMG")
-    cajaGrande.append(foto)
-    fragment.append(cajaGrande)
-    fotoBot.after(fragment)
+const pintarFotoBot = (tag) => {
+    
+
+    const match = arrayFotoGrandes.find((item)=>{
+        return item.ciudad === tag
+    })
+
+    const {alt, src, titulo: title, ciudad} = match
+
+        const cajaGrande = document.createElement("DIV")
+        const caja = document.createElement("DIV")
+        const foto = document.createElement("IMG")
+        foto.src = src
+        foto.alt = alt
+        const titulo = document.createElement("P")
+        titulo.id = ciudad
+        titulo.textContent = title
+        caja.append(foto)
+        cajaGrande.append(caja, titulo)
+        fragment.append(cajaGrande)
+    
+        fotoCiudad.append(fragment) 
 }
 
-const limpiarFotoBot = () => {
-    fotoBot.innerHTML = ''; 
-};
+const borrar = () => {
+    fotoCiudad.innerHTML = '';
+}
+
+const botonVisible = () => {
+    limpiar.style.visibility='visible'  
+}
+
+
 
 pintarFotoTop()
 pintarCartas()
